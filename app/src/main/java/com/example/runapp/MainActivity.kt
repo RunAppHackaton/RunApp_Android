@@ -20,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.io.File
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -34,6 +35,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val dexOutputDir: File = codeCacheDir
+        dexOutputDir.setReadOnly()
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
