@@ -67,16 +67,16 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
-//        val preferences = getPreferences(MODE_PRIVATE)
-//        isStarted = preferences.getBoolean("isStarted", false)
-//        if (!isStarted){
-//            showPopupMenu()
-//        }
-////        bottomNavigationView.visibility = if (preferences.getBoolean("isBottomNavVisible", true)){
-//            View.VISIBLE
-//        } else{
-//            View.GONE
-//        }
+        val preferences = getPreferences(MODE_PRIVATE)
+        isStarted = preferences.getBoolean("isStarted", false)
+        if (!isStarted){
+            showPopupMenu()
+        }
+        bottomNavigationView.visibility = if (preferences.getBoolean("isBottomNavVisible", true)){
+            View.VISIBLE
+        } else{
+            View.GONE
+        }
     }
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {
@@ -217,9 +217,9 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val popupButton: Button = dialogView.findViewById(R.id.getingrs)
         popupButton.setOnClickListener {
             isStarted = true
-//            saveIsStartedState(isStarted)
-//            bottomNavigationView.visibility = View.GONE
-//            saveVisibilityState()
+            saveIsStartedState(isStarted)
+            bottomNavigationView.visibility = View.GONE
+            saveVisibilityState()
             dialog.dismiss()
         }
         val closeButton: Button = dialogView.findViewById(R.id.closebtn)
