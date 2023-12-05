@@ -28,6 +28,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.UiSettings
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.concurrent.TimeUnit
 
@@ -40,71 +42,50 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLongitude: Double = 0.0
     private var doubleBackToExitPressedOnce = false
     private var isStarted : Boolean = false
-    private lateinit var bottomNavigationView : BottomNavigationView
     private lateinit var runningBar : View
     private lateinit var stopRunButton : View
     private lateinit var timerView : TextView
+    private lateinit var polyline: Polyline
+    private lateinit var locationRequest : LocationRequest
     private val handler = Handler()
     private var secondsPassed = 0
+    private lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_running)
 
+        appPreferences = AppPreferences(applicationContext)
         timerView = findViewById(R.id.timerid)
         stopRunButton = findViewById(R.id.stoprun)
         runningBar = findViewById(R.id.runningbar)
-        bottomNavigationView = findViewById(R.id.bottomNavigationViewRunning)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
-        bottomNavigationView.selectedItemId = R.id.home
-
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.home -> {
-                    startActivity(Intent(applicationContext, MainActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.runningMode -> true
-                R.id.settings -> {
-                    startActivity(Intent(applicationContext, SettingsActivity::class.java))
-                    finish()
-                    true
-                }
-                else -> false
-            }
-        }
-        val preferences = getPreferences(MODE_PRIVATE)
-        isStarted = preferences.getBoolean("isStarted", false)
-        if (!isStarted){
+        isStarted = appPreferences.getIsStarted()
+        if (!isStarted) {
             showPopupMenu()
         }
-        bottomNavigationView.visibility = if (preferences.getBoolean("isBottomNavVisible", true)){
+        runningBar.visibility = if (appPreferences.isRunningBarVisible()) {
             View.VISIBLE
-        } else{
+        } else {
             View.GONE
         }
-        runningBar.visibility = if (preferences.getBoolean("isRunningBarVisible", true)){
+
+        stopRunButton.visibility = if (appPreferences.isStopRunButtonVisible()) {
             View.VISIBLE
-        }else{
+        } else {
             View.GONE
         }
-        stopRunButton.visibility = if (preferences.getBoolean("isStopRunButtonVisible", true)){
-            View.VISIBLE
-        }else{
-            View.GONE
-        }
+
         stopRunButton.setOnClickListener{
             isStarted = false
-            saveIsStartedState(isStarted)
-            bottomNavigationView.visibility = View.VISIBLE
-            runningBar.visibility = View.GONE
-            stopRunButton.visibility = View.GONE
-            saveVisibilityState()
+            appPreferences.setIsStarted(isStarted)
+            appPreferences.setVisibilityStates(
+                runningBar.visibility == View.GONE,
+                runningBar.visibility == View.GONE
+            )
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()
         }
@@ -140,7 +121,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         } catch (e: Resources.NotFoundException) {
             Log.e("MapActivity", "Can't find style. Error: ", e)
         }
-        val locationRequest = LocationRequest.create()
+        locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 1500
 
@@ -171,6 +152,8 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         )
         val uiSettings = googleMap.uiSettings
         uiSettings.isMyLocationButtonEnabled = false
+
+        polyline = googleMap.addPolyline(PolylineOptions().width(5f).color(R.color.dark_green))
     }
 
     private fun enableMyLocation() {
@@ -250,41 +233,29 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val popupButton: Button = dialogView.findViewById(R.id.getingrs)
         popupButton.setOnClickListener {
             isStarted = true
-            saveIsStartedState(isStarted)
-            bottomNavigationView.visibility = View.GONE
+            appPreferences.setIsStarted(isStarted)
+            appPreferences.setVisibilityStates(
+                runningBar.visibility == View.VISIBLE,
+                stopRunButton.visibility == View.VISIBLE
+            )
             runningBar.visibility = View.VISIBLE
             stopRunButton.visibility = View.VISIBLE
-            saveVisibilityState()
             dialog.dismiss()
             startTimer()
+            drawRoute()
         }
         val closeButton: Button = dialogView.findViewById(R.id.closebtn)
         closeButton.setOnClickListener {
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()
         }
-
-    }
-    private fun saveIsStartedState(isStarted: Boolean) {
-        val preferences = getPreferences(MODE_PRIVATE)
-        val editor = preferences.edit()
-        editor.putBoolean("isStarted", isStarted)
-        editor.apply()
-    }
-    private fun saveVisibilityState() {
-        val preferences = getPreferences(MODE_PRIVATE)
-        val editor = preferences.edit()
-        editor.putBoolean("isBottomNavVisible", bottomNavigationView.visibility == View.VISIBLE)
-        editor.putBoolean("isRunningBarVisible", runningBar.visibility == View.VISIBLE)
-        editor.putBoolean("isStopRunButtonVisible", runningBar.visibility == View.VISIBLE)
-        editor.apply()
     }
     private val updateTextRunnable = object : Runnable {
         override fun run() {
             val hours = TimeUnit.SECONDS.toHours(secondsPassed.toLong())
             val minutes = TimeUnit.SECONDS.toMinutes(secondsPassed.toLong()) % 60
             val seconds = secondsPassed % 60
-            timerView.text = String.format("Time: %02d:%02d:%02d", hours, minutes, seconds)
+            timerView.text = String.format("%02d : %02d : %02d", hours, minutes, seconds)
 
             // Increment seconds counter
             secondsPassed++
@@ -299,6 +270,43 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
+        appPreferences.setIsStarted(false)
+        appPreferences.setVisibilityStates(false, false)
         handler.removeCallbacks(updateTextRunnable)
+    }
+    private fun drawRoute(){
+        appPreferences.setIsStarted(true)
+        appPreferences.setVisibilityStates(true, true)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    locationResult.lastLocation?.let { location ->
+                        myLatitude = location.latitude
+                        myLongitude = location.longitude
+
+                        // Update the polyline with the new location
+                        val newLatLng = LatLng(myLatitude, myLongitude)
+                        val points = polyline.points
+                        points.add(newLatLng)
+                        polyline.points = points
+
+                        // Move the camera to the current location
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 15f))
+                    }
+                }
+            },
+            Looper.getMainLooper()
+        )
     }
 }
