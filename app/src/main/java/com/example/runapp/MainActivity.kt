@@ -9,13 +9,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -95,6 +93,43 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         } catch (e: Resources.NotFoundException) {
             Log.e("MapActivity", "Can't find style. Error: ", e)
         }
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 1500 // 5 seconds interval (you can adjust this)
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(p0: LocationResult) {
+                    p0.lastLocation?.let { location ->
+                        myLatitude = location.latitude
+                        myLongitude = location.longitude
+
+                        // Move the camera to the user's location
+                        val userLocation = LatLng(myLatitude, myLongitude)
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+                    }
+                }
+            },
+            Looper.getMainLooper()
+        )
     }
 
     private fun enableMyLocation() {
@@ -121,7 +156,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     // Move the camera to the user's location
                     val userLocation = LatLng(myLatitude, myLongitude)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                 }
             }
         } else {

@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/opensansbold"
                 android:textColor="@color/dark_green"
                 android:textAlignment="center"
                 android:text="Name Surname"/>
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/opensansbold"
                 android:textAlignment="center"
                 android:textColor="@color/medium_green"
                 android:text="Results for today:"
@@ -76,7 +76,7 @@
                         android:text="km"
                         android:gravity="center"
                         android:textColor="#dedede"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/opensansbold"
                         android:padding="8dp"
                         tools:ignore="HardcodedText" />
 
@@ -86,7 +86,7 @@
                         android:text="10.9"
                         android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/opensansbold"
                         android:padding="8dp"/>
                 </LinearLayout>
 
@@ -103,7 +103,7 @@
                         android:text="kcal"
                         android:gravity="center"
                         android:textColor="#dedede"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/opensansbold"
                         android:padding="8dp"
                         tools:ignore="HardcodedText" />
 
@@ -113,7 +113,7 @@
                         android:text="216"
                         android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/opensansbold"
                         android:padding="8dp"/>
                 </LinearLayout>
 
@@ -130,7 +130,7 @@
                         android:text="time"
                         android:gravity="center"
                         android:textColor="#dedede"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/opensansbold"
                         android:padding="8dp"
                         tools:ignore="HardcodedText" />
 
@@ -140,7 +140,7 @@
                         android:text="1:34"
                         android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/opensansbold"
                         android:padding="8dp"/>
                 </LinearLayout>
 
@@ -159,8 +159,8 @@
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
         app:menu="@menu/bottom_navigation_menu"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
         app:labelVisibilityMode="unlabeled"/>
 
     <LinearLayout
@@ -198,7 +198,7 @@
                     android:layout_height="match_parent"
                     android:text="Inventory"
                     android:gravity="center"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/opensansbold"
                     android:textColor="@android:color/white"
                     tools:ignore="HardcodedText" />
 
@@ -230,7 +230,7 @@
                     android:layout_height="match_parent"
                     android:text="Guild"
                     android:gravity="center"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/opensansbold"
                     android:textColor="@android:color/white"
                     tools:ignore="HardcodedText" />
 
@@ -261,7 +261,7 @@
                     android:layout_height="match_parent"
                     android:text="Story"
                     android:gravity="center"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/opensansbold"
                     android:textColor="@android:color/white"
                     tools:ignore="HardcodedText" />
 
