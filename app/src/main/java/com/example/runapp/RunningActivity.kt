@@ -17,6 +17,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
@@ -24,9 +25,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.UiSettings
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.TimeUnit
 
 class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -38,11 +41,19 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     private var doubleBackToExitPressedOnce = false
     private var isStarted : Boolean = false
     private lateinit var bottomNavigationView : BottomNavigationView
+    private lateinit var runningBar : View
+    private lateinit var stopRunButton : View
+    private lateinit var timerView : TextView
+    private val handler = Handler()
+    private var secondsPassed = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_running)
 
+        timerView = findViewById(R.id.timerid)
+        stopRunButton = findViewById(R.id.stoprun)
+        runningBar = findViewById(R.id.runningbar)
         bottomNavigationView = findViewById(R.id.bottomNavigationViewRunning)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -76,6 +87,26 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             View.VISIBLE
         } else{
             View.GONE
+        }
+        runningBar.visibility = if (preferences.getBoolean("isRunningBarVisible", true)){
+            View.VISIBLE
+        }else{
+            View.GONE
+        }
+        stopRunButton.visibility = if (preferences.getBoolean("isStopRunButtonVisible", true)){
+            View.VISIBLE
+        }else{
+            View.GONE
+        }
+        stopRunButton.setOnClickListener{
+            isStarted = false
+            saveIsStartedState(isStarted)
+            bottomNavigationView.visibility = View.VISIBLE
+            runningBar.visibility = View.GONE
+            stopRunButton.visibility = View.GONE
+            saveVisibilityState()
+            startActivity(Intent(applicationContext, MainActivity::class.java))
+            finish()
         }
     }
     override fun onBackPressed() {
@@ -138,6 +169,8 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             },
             Looper.getMainLooper()
         )
+        val uiSettings = googleMap.uiSettings
+        uiSettings.isMyLocationButtonEnabled = false
     }
 
     private fun enableMyLocation() {
@@ -219,8 +252,11 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             isStarted = true
             saveIsStartedState(isStarted)
             bottomNavigationView.visibility = View.GONE
+            runningBar.visibility = View.VISIBLE
+            stopRunButton.visibility = View.VISIBLE
             saveVisibilityState()
             dialog.dismiss()
+            startTimer()
         }
         val closeButton: Button = dialogView.findViewById(R.id.closebtn)
         closeButton.setOnClickListener {
@@ -239,6 +275,30 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val preferences = getPreferences(MODE_PRIVATE)
         val editor = preferences.edit()
         editor.putBoolean("isBottomNavVisible", bottomNavigationView.visibility == View.VISIBLE)
+        editor.putBoolean("isRunningBarVisible", runningBar.visibility == View.VISIBLE)
+        editor.putBoolean("isStopRunButtonVisible", runningBar.visibility == View.VISIBLE)
         editor.apply()
+    }
+    private val updateTextRunnable = object : Runnable {
+        override fun run() {
+            val hours = TimeUnit.SECONDS.toHours(secondsPassed.toLong())
+            val minutes = TimeUnit.SECONDS.toMinutes(secondsPassed.toLong()) % 60
+            val seconds = secondsPassed % 60
+            timerView.text = String.format("Time: %02d:%02d:%02d", hours, minutes, seconds)
+
+            // Increment seconds counter
+            secondsPassed++
+
+            // Schedule the runnable to run again after 1000 milliseconds (1 second)
+            handler.postDelayed(this, 1000)
+        }
+    }
+    private fun startTimer() {
+        handler.post(updateTextRunnable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(updateTextRunnable)
     }
 }
