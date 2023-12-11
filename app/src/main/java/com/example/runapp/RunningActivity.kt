@@ -15,8 +15,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.PopupWindow
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -25,12 +23,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.UiSettings
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.concurrent.TimeUnit
 
 class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -49,13 +45,13 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationRequest : LocationRequest
     private val handler = Handler()
     private var secondsPassed = 0
-    private lateinit var appPreferences: AppPreferences
+    private var totalDistanceInMeters: Float = 0f
+    private var lastLocation: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_running)
 
-        appPreferences = AppPreferences(applicationContext)
         timerView = findViewById(R.id.timerid)
         stopRunButton = findViewById(R.id.stoprun)
         runningBar = findViewById(R.id.runningbar)
@@ -63,29 +59,12 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        isStarted = appPreferences.getIsStarted()
+
         if (!isStarted) {
             showPopupMenu()
         }
-        runningBar.visibility = if (appPreferences.isRunningBarVisible()) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-
-        stopRunButton.visibility = if (appPreferences.isStopRunButtonVisible()) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-
         stopRunButton.setOnClickListener{
             isStarted = false
-            appPreferences.setIsStarted(isStarted)
-            appPreferences.setVisibilityStates(
-                runningBar.visibility == View.GONE,
-                runningBar.visibility == View.GONE
-            )
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()
         }
@@ -123,7 +102,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 1500
+        locationRequest.interval = 1000
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -153,7 +132,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val uiSettings = googleMap.uiSettings
         uiSettings.isMyLocationButtonEnabled = false
 
-        polyline = googleMap.addPolyline(PolylineOptions().width(5f).color(R.color.dark_green))
+        polyline = googleMap.addPolyline(PolylineOptions().width(10f).color(R.color.dark_green))
     }
 
     private fun enableMyLocation() {
@@ -170,14 +149,12 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                 true
             }
 
-            // Get the last known location and update the UI
             fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
                 val location: Location? = task.result
                 if (location != null) {
                     myLatitude = location.latitude
                     myLongitude = location.longitude
 
-                    // Move the camera to the user's location
                     val userLocation = LatLng(myLatitude, myLongitude)
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                 }
@@ -233,11 +210,6 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val popupButton: Button = dialogView.findViewById(R.id.getingrs)
         popupButton.setOnClickListener {
             isStarted = true
-            appPreferences.setIsStarted(isStarted)
-            appPreferences.setVisibilityStates(
-                runningBar.visibility == View.VISIBLE,
-                stopRunButton.visibility == View.VISIBLE
-            )
             runningBar.visibility = View.VISIBLE
             stopRunButton.visibility = View.VISIBLE
             dialog.dismiss()
@@ -257,10 +229,8 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             val seconds = secondsPassed % 60
             timerView.text = String.format("%02d : %02d : %02d", hours, minutes, seconds)
 
-            // Increment seconds counter
             secondsPassed++
 
-            // Schedule the runnable to run again after 1000 milliseconds (1 second)
             handler.postDelayed(this, 1000)
         }
     }
@@ -270,13 +240,9 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
-        appPreferences.setIsStarted(false)
-        appPreferences.setVisibilityStates(false, false)
         handler.removeCallbacks(updateTextRunnable)
     }
     private fun drawRoute(){
-        appPreferences.setIsStarted(true)
-        appPreferences.setVisibilityStates(true, true)
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -295,18 +261,36 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                         myLatitude = location.latitude
                         myLongitude = location.longitude
 
-                        // Update the polyline with the new location
                         val newLatLng = LatLng(myLatitude, myLongitude)
                         val points = polyline.points
                         points.add(newLatLng)
                         polyline.points = points
 
-                        // Move the camera to the current location
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 15f))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 15f))
+
+                        if (lastLocation != null) {
+                            val distance = lastLocation!!.distanceTo(location)
+                            totalDistanceInMeters += distance
+
+                            val speed = location.speed
+
+                            updateDistanceAndSpeed(totalDistanceInMeters, speed)
+                        }
+                        lastLocation = location
                     }
                 }
             },
             Looper.getMainLooper()
         )
+    }
+    private fun updateDistanceAndSpeed(distanceInMeters: Float, speed: Float) {
+        val distanceInKm = distanceInMeters / 1000
+        val speedInKmPerHour = speed * 3.6 // Convert m/s to km/h
+
+        val distanceTextView: TextView = findViewById(R.id.distance)
+        distanceTextView.text = String.format("%.2f km", distanceInKm)
+
+        val speedTextView: TextView = findViewById(R.id.speed)
+        speedTextView.text = String.format("%.2f km/h", speedInKmPerHour)
     }
 }

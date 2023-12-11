@@ -80,9 +80,10 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
+                    android:id="@+id/distance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="10.9"
+                    android:text="0.0"
                     android:background="@drawable/rounded_rectangle_dark"
                     android:gravity="center"
                     android:textColor="@android:color/white"
@@ -108,9 +109,10 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
+                    android:id="@+id/kcal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="216"
+                    android:text="0"
                     android:gravity="center"
                     android:textColor="@android:color/white"
                     android:background="@drawable/rounded_rectangle_dark"
@@ -118,7 +120,6 @@
                     android:padding="8dp"/>
             </LinearLayout>
 
-            <!-- Third Rectangle -->
             <LinearLayout
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
@@ -136,9 +137,10 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
+                    android:id="@+id/speed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="12.3"
+                    android:text="0"
                     android:gravity="center"
                     android:textColor="@android:color/white"
                     android:background="@drawable/rounded_rectangle_dark"
