@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap = map
         enableMyLocation()
 
-        // Load custom map style
         try {
             val success = googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
@@ -99,7 +98,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 1500 // 5 seconds interval (you can adjust this)
+        locationRequest.interval = 2000
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -142,24 +141,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         ) {
             googleMap.isMyLocationEnabled = true
             googleMap.setOnMyLocationButtonClickListener {
-                // Handle the my location button click, if needed.
                 true
             }
 
-            // Get the last known location and update the UI
             fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
                 val location: Location? = task.result
                 if (location != null) {
                     myLatitude = location.latitude
                     myLongitude = location.longitude
 
-                    // Move the camera to the user's location
                     val userLocation = LatLng(myLatitude, myLongitude)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                 }
             }
         } else {
-            // Permissions are not granted, request them.
             requestPermissions(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,

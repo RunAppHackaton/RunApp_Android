@@ -3,7 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:id="@+id/menu_block"
         android:layout_width="match_parent"
@@ -19,30 +20,31 @@
             android:id="@+id/firstlin"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="88dp"
+                android:layout_height="68dp"
                 android:text="Choose what will you run for this time."
                 android:textSize="20sp"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:fontFamily="@font/opensansbold"
-                android:padding="15dp" />
+                android:layout_marginTop="10dp"
+                android:padding="5dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/medium_green"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="0dp"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/secondlin"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="170dp"
             android:orientation="vertical"
             android:layout_below="@+id/firstlin">
 
@@ -85,20 +87,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/medium_green"
-                android:layout_marginTop="19dp"/>
+                android:layout_marginTop="9dp"/>
 
         </LinearLayout>
         <LinearLayout
             android:id="@+id/thirdlin"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="160dp"
             android:orientation="vertical"
             android:layout_below="@+id/secondlin">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="Scout"
                 android:textSize="20sp"
                 android:textAlignment="center"
@@ -133,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/medium_green"
-                android:layout_marginTop="19dp"/>
+                android:layout_marginTop="8dp"/>
 
         </LinearLayout>
         <LinearLayout
@@ -166,6 +168,17 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_below="@+id/fourthlin"
+            android:id="@+id/bottomNavigationViewRunning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_rectangle"
+            app:itemIconTint="@color/white"
+            app:itemTextColor="@color/white"
+            app:menu="@menu/bottom_navigation_menu"
+            app:labelVisibilityMode="unlabeled"/>
+
 
     </RelativeLayout>
 
@@ -188,15 +201,5 @@
             android:textColor="@color/white"
             tools:ignore="HardcodedText" />
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/closebtn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:layout_toEndOf="@+id/texttr"
-        android:background="@drawable/rounded_button"
-        android:foreground="@drawable/close"/>
 
 </RelativeLayout>

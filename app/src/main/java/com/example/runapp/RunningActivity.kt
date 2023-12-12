@@ -1,6 +1,7 @@
 package com.example.runapp
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,26 +29,28 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.concurrent.TimeUnit
 
 class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapFragment: SupportMapFragment
-    private lateinit var googleMap: GoogleMap
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private var myLatitude: Double = 0.0
-    private var myLongitude: Double = 0.0
+    lateinit var googleMap: GoogleMap
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    var myLatitude: Double = 0.0
+    var myLongitude: Double = 0.0
     private var doubleBackToExitPressedOnce = false
     private var isStarted : Boolean = false
     private lateinit var runningBar : View
     private lateinit var stopRunButton : View
     private lateinit var timerView : TextView
-    private lateinit var polyline: Polyline
+    lateinit var polyline: Polyline
     private lateinit var locationRequest : LocationRequest
     private val handler = Handler()
     private var secondsPassed = 0
-    private var totalDistanceInMeters: Float = 0f
-    private var lastLocation: Location? = null
+    var totalDistanceInMeters: Float = 0f
+    var lastLocation: Location? = null
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +87,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         }, 2000)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         enableMyLocation()
@@ -104,16 +109,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 1000
 
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
+        permissionCheck()
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
@@ -193,6 +189,8 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val inflater = LayoutInflater.from(this)
         val dialogView: View = inflater.inflate(R.layout.run_popup_menu, null)
 
+        bottomNavigationView = dialogView.findViewById(R.id.bottomNavigationViewRunning)
+
         builder.setView(dialogView)
         val dialog = builder.create()
 
@@ -216,10 +214,23 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             startTimer()
             drawRoute()
         }
-        val closeButton: Button = dialogView.findViewById(R.id.closebtn)
-        closeButton.setOnClickListener {
-            startActivity(Intent(applicationContext, MainActivity::class.java))
-            finish()
+        bottomNavigationView.selectedItemId = R.id.runningMode
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    startActivity(Intent(applicationContext, MainActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.runningMode -> true
+                R.id.settings -> {
+                    startActivity(Intent(applicationContext, SettingsActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> true
+            }
         }
     }
     private val updateTextRunnable = object : Runnable {
@@ -242,17 +253,10 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onDestroy()
         handler.removeCallbacks(updateTextRunnable)
     }
-    private fun drawRoute(){
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
+
+    @SuppressLint("MissingPermission")
+    fun drawRoute(){
+        permissionCheck()
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
@@ -285,12 +289,24 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     private fun updateDistanceAndSpeed(distanceInMeters: Float, speed: Float) {
         val distanceInKm = distanceInMeters / 1000
-        val speedInKmPerHour = speed * 3.6 // Convert m/s to km/h
+        val speedInKmPerHour = speed * 3.6
 
         val distanceTextView: TextView = findViewById(R.id.distance)
         distanceTextView.text = String.format("%.2f km", distanceInKm)
 
         val speedTextView: TextView = findViewById(R.id.speed)
         speedTextView.text = String.format("%.2f km/h", speedInKmPerHour)
+    }
+    private fun permissionCheck(){
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
     }
 }
