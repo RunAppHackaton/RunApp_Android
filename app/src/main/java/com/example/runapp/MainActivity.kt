@@ -1,10 +1,12 @@
 package com.example.runapp
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //BLOCK OF CODE TO MAKE IT WORK AT EMULATOR
         val dexOutputDir: File = codeCacheDir
         dexOutputDir.setReadOnly()
 
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }, 2000)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         enableMyLocation()
@@ -100,16 +104,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 2000
 
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
@@ -155,12 +149,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         } else {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), PERMISSION_REQUEST_ACCESS_LOCATION
-            )
+            if (Build.VERSION.SDK_INT >= 34) {
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.FOREGROUND_SERVICE_LOCATION
+                    ), PERMISSION_REQUEST_ACCESS_LOCATION
+                )
+            }else{
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                    ), PERMISSION_REQUEST_ACCESS_LOCATION
+                )
+            }
         }
     }
 

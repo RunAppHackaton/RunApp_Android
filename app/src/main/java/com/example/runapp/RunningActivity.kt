@@ -7,11 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Location
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +16,6 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,7 +32,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapFragment: SupportMapFragment
     lateinit var googleMap: GoogleMap
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     var myLatitude: Double = 0.0
     var myLongitude: Double = 0.0
     private var doubleBackToExitPressedOnce = false
@@ -72,7 +68,11 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()
         }
+        val intent = Intent(this, LocationTrackingService::class.java)
+
+        startForegroundService(intent)
     }
+
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
@@ -109,7 +109,6 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 1000
 
-        permissionCheck()
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
@@ -131,37 +130,22 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         polyline = googleMap.addPolyline(PolylineOptions().width(10f).color(R.color.dark_green))
     }
 
+    @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            googleMap.isMyLocationEnabled = true
-            googleMap.setOnMyLocationButtonClickListener {
-                true
-            }
+        googleMap.isMyLocationEnabled = true
+        googleMap.setOnMyLocationButtonClickListener {
+            true
+        }
 
-            fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
-                val location: Location? = task.result
-                if (location != null) {
-                    myLatitude = location.latitude
-                    myLongitude = location.longitude
+        fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
+            val location: Location? = task.result
+            if (location != null) {
+                myLatitude = location.latitude
+                myLongitude = location.longitude
 
-                    val userLocation = LatLng(myLatitude, myLongitude)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
-                }
+                val userLocation = LatLng(myLatitude, myLongitude)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
             }
-        } else {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), PERMISSION_REQUEST_ACCESS_LOCATION
-            )
         }
     }
 
@@ -254,38 +238,38 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         handler.removeCallbacks(updateTextRunnable)
     }
 
+    fun LatLng.toLocation(): Location {
+        val location = Location("LatLngProvider")
+        location.latitude = this.latitude
+        location.longitude = this.longitude
+        return location
+    }
+
     @SuppressLint("MissingPermission")
     fun drawRoute(){
-        permissionCheck()
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    locationResult.lastLocation?.let { location ->
-                        myLatitude = location.latitude
-                        myLongitude = location.longitude
+        val locationRepository = LocationRepository.getInstance()
+        locationRepository.addListener(object : LocationRepository.LocationListener {
+            override fun onLocationListUpdated(locationList: List<LatLng>) {
+                if (locationList.isNotEmpty()){
+                    val location = locationList[0].toLocation()
+                    val points = polyline.points
+                    points.add(locationList[0])
+                    polyline.points = points
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationList[0], 15f))
 
-                        val newLatLng = LatLng(myLatitude, myLongitude)
-                        val points = polyline.points
-                        points.add(newLatLng)
-                        polyline.points = points
+                    if (lastLocation != null) {
+                        val distance = lastLocation!!.distanceTo(location)
+                        totalDistanceInMeters += distance
 
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 15f))
+                        val speed = location.speed
 
-                        if (lastLocation != null) {
-                            val distance = lastLocation!!.distanceTo(location)
-                            totalDistanceInMeters += distance
-
-                            val speed = location.speed
-
-                            updateDistanceAndSpeed(totalDistanceInMeters, speed)
-                        }
-                        lastLocation = location
+                        updateDistanceAndSpeed(totalDistanceInMeters, speed)
                     }
+                    lastLocation = location
+                    locationRepository.removeLocation(0)
                 }
-            },
-            Looper.getMainLooper()
-        )
+            }
+        })
     }
     private fun updateDistanceAndSpeed(distanceInMeters: Float, speed: Float) {
         val distanceInKm = distanceInMeters / 1000
@@ -297,16 +281,9 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val speedTextView: TextView = findViewById(R.id.speed)
         speedTextView.text = String.format("%.2f km/h", speedInKmPerHour)
     }
-    private fun permissionCheck(){
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-    }
 }
+
+/*
+TODO
+achievements by sum from start
+*/
