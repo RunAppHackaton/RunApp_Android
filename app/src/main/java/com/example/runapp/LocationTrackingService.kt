@@ -71,7 +71,6 @@ class LocationTrackingService : Service() {
 
                     val userLocation = LatLng(myLatitude, myLongitude)
                     println(userLocation)
-                    locationList.add(userLocation)
                     locationRepository.updateLocationList(userLocation)
                 }
             }

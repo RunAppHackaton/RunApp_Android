@@ -10,6 +10,7 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,6 +24,11 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
+
+    private var routesId: Int = 0
+    private var sneakersId: Int = 0
+    private var goalsId: Int = 0
+    private var statisticId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +61,7 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
         val scrollViewGoals: ScrollView = findViewById(R.id.scrollViewGoals)
         val scrollViewStatistic: ScrollView = findViewById(R.id.scrollViewStatistic)
         scrollViewRoutes.setOnClickListener {
-            // You can also perform other actions here based on the click
+            dynamicallyExtendScrollView(scrollViewRoutes)
         }
         scrollViewSneakers.setOnClickListener {
             // You can also perform other actions here based on the click
@@ -67,6 +73,48 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
             // You can also perform other actions here based on the click
         }
     }
+
+    private fun dynamicallyExtendScrollView(scrollView: ScrollView) : Int{
+        val linearLayout = LinearLayout(this)
+        val id = ViewCompat.generateViewId()
+        linearLayout.id = id // Use generateViewId() for API 17 and above
+
+        // Set LinearLayout parameters
+        linearLayout.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        linearLayout.orientation = LinearLayout.VERTICAL
+
+        // Add the LinearLayout to the ScrollView
+        scrollView.addView(linearLayout)
+
+        // Create a TextView for the title
+        val titleTextView = TextView(this)
+        titleTextView.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        titleTextView.text = title
+        titleTextView.textSize = 16f
+        titleTextView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+        titleTextView.setTextColor(resources.getColor(R.color.white)) // Use the appropriate color resource
+        titleTextView.setPadding(0, 15, 0, 15) // Adjust padding as needed
+        linearLayout.addView(titleTextView)
+
+        // Create additional views dynamically here as needed
+
+        // Add a separator line
+        val separator = View(this)
+        separator.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            2
+        )
+        separator.setBackgroundColor(resources.getColor(R.color.medium_green)) // Use the appropriate color resource
+        linearLayout.addView(separator)
+        return id
+    }
+
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         try {

@@ -169,11 +169,11 @@
         </LinearLayout>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:layout_below="@+id/fourthlin"
             android:id="@+id/bottomNavigationViewRunning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_rectangle"
+            android:layout_alignParentBottom="true"
             app:itemIconTint="@color/white"
             app:itemTextColor="@color/white"
             app:menu="@menu/bottom_navigation_menu"
