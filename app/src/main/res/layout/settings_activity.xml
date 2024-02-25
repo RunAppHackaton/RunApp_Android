@@ -129,178 +129,48 @@
 
             <!-- Extendable content -->
 
-            <ScrollView
-                android:id="@+id/scrollViewRoutes"
+            <ExpandableListView
+                android:id="@+id/expandableListViewRoutes"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15"
-                android:clickable="true">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textset"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:clickable="true"/>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+<!--            &lt;!&ndash; Sneakers section &ndash;&gt;-->
+<!--            <ExpandableListView-->
+<!--                android:id="@+id/expandableListViewSneakers"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/expandableListViewRoutes"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginStart="40dp"-->
+<!--                android:layout_marginEnd="40dp"-->
+<!--                android:clickable="true"/>-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Routes"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/opensansbold"
-                        android:textColor="@color/white"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp" />
+<!--            &lt;!&ndash; Goals section &ndash;&gt;-->
+<!--            <ExpandableListView-->
+<!--                android:id="@+id/expandableListViewGoals"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/expandableListViewSneakers"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginStart="40dp"-->
+<!--                android:layout_marginEnd="40dp"-->
+<!--                android:clickable="true"/>-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_arrow_down"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/medium_green"
-                        android:layout_alignParentBottom="true"/>
-                </RelativeLayout>
-
-
-            </ScrollView>
-
-            <ScrollView
-                android:id="@+id/scrollViewSneakers"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sneakers"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/opensansbold"
-                        android:textColor="@color/white"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_arrow_down"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/medium_green"
-                        android:layout_alignParentBottom="true"/>
-                </RelativeLayout>
-
-            </ScrollView>
-            <ScrollView
-                android:id="@+id/scrollViewGoals"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Goals"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/opensansbold"
-                        android:textColor="@color/white"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_arrow_down"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/medium_green"
-                        android:layout_alignParentBottom="true"/>
-                </RelativeLayout>
-
-            </ScrollView>
-
-            <ScrollView
-                android:id="@+id/scrollViewStatistic"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Statistic"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/opensansbold"
-                        android:textColor="@color/white"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_arrow_down"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/medium_green"
-                        android:layout_alignParentBottom="true"/>
-                </RelativeLayout>
-
-            </ScrollView>
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15">
-
-
-            </ScrollView>
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15">
-
-
-            </ScrollView>
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15">
-
-
-            </ScrollView>
+<!--            &lt;!&ndash; Statistic section &ndash;&gt;-->
+<!--            <ExpandableListView-->
+<!--                android:id="@+id/expandableListViewStatistic"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/expandableListViewGoals"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginStart="40dp"-->
+<!--                android:layout_marginEnd="40dp"-->
+<!--                android:clickable="true"/>-->
 
         </LinearLayout>
     </ScrollView>

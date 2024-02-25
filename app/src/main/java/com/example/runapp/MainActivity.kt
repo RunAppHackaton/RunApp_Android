@@ -22,8 +22,15 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 
+const val BASE_RUN_URl = "https://app.swaggerhub.com/"
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -66,6 +73,34 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
+        getMyData()
+    }
+
+    private fun getMyData() {
+        val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_RUN_URl)
+            .build()
+            .create(ApiInterface::class.java)
+
+        val retrofitData = retrofitBuilder.getData()
+        retrofitData.enqueue(object : Callback<List<MyData>?> {
+            override fun onResponse(call: Call<List<MyData>?>, response: Response<List<MyData>?>) {
+                val responseBody = response.body()!!
+
+                val myStringBuilder = StringBuilder()
+                for(myData in responseBody){
+                    myStringBuilder.append(myData.id)
+                    myStringBuilder.append("\n")
+                }
+                nameSur.text = myStringBuilder
+            }
+
+            override fun onFailure(call: Call<List<MyData>?>, t: Throwable) {
+                Log.d("MainActivity", "OnFailure" + t.message)
+
+                TODO("Check if server is OK")
+            }
+        })
     }
 
     override fun onBackPressed() {

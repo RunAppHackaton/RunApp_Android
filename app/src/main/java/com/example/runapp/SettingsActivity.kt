@@ -5,10 +5,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,6 +22,11 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
 
+    private lateinit var listViewAdapter: ExpandableListAdapter
+    private lateinit var expandableListViewRoutes: ExpandableListView
+    private lateinit var chapterList :  List<String>
+    private lateinit var topicList : HashMap<String, List<String>>
+
     private var routesId: Int = 0
     private var sneakersId: Int = 0
     private var goalsId: Int = 0
@@ -37,7 +39,8 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationViewSettings)
+        val bottomNavigationView: BottomNavigationView =
+            findViewById(R.id.bottomNavigationViewSettings)
         bottomNavigationView.selectedItemId = R.id.home
 
         bottomNavigationView.setOnItemSelectedListener { item ->
@@ -56,63 +59,46 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
-        val scrollViewRoutes: ScrollView = findViewById(R.id.scrollViewRoutes)
-        val scrollViewSneakers: ScrollView = findViewById(R.id.scrollViewSneakers)
-        val scrollViewGoals: ScrollView = findViewById(R.id.scrollViewGoals)
-        val scrollViewStatistic: ScrollView = findViewById(R.id.scrollViewStatistic)
-        scrollViewRoutes.setOnClickListener {
-            dynamicallyExtendScrollView(scrollViewRoutes)
-        }
-        scrollViewSneakers.setOnClickListener {
-            // You can also perform other actions here based on the click
-        }
-        scrollViewGoals.setOnClickListener {
-            // You can also perform other actions here based on the click
-        }
-        scrollViewStatistic.setOnClickListener {
-            // You can also perform other actions here based on the click
-        }
+        expandableListViewRoutes = findViewById(R.id.expandableListViewRoutes)
+
+        showList()
+
+        listViewAdapter = ExpandableListViewAdapter(this, chapterList, topicList)
+        expandableListViewRoutes.setAdapter(listViewAdapter)
+
+
+//        val expandableViewRoutes: ExpandableListView = findViewById(R.id.expandableListViewRoutes)
+//        val expandableViewSneakers: ExpandableListView = findViewById(R.id.expandableListViewSneakers)
+//        val expandableViewGoals: ExpandableListView = findViewById(R.id.expandableListViewGoals)
+//        val expandableViewStatistics: ExpandableListView = findViewById(R.id.expandableListViewStatistic)
     }
 
-    private fun dynamicallyExtendScrollView(scrollView: ScrollView) : Int{
-        val linearLayout = LinearLayout(this)
-        val id = ViewCompat.generateViewId()
-        linearLayout.id = id // Use generateViewId() for API 17 and above
+    private fun showList() {
+        chapterList = ArrayList()
+        topicList = HashMap()
 
-        // Set LinearLayout parameters
-        linearLayout.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        linearLayout.orientation = LinearLayout.VERTICAL
+        (chapterList as ArrayList<String>).add("Chapter 1")
+        (chapterList as ArrayList<String>).add("Chapter 2")
+        (chapterList as ArrayList<String>).add("Chapter 3")
 
-        // Add the LinearLayout to the ScrollView
-        scrollView.addView(linearLayout)
+        val topic1: MutableList<String> = ArrayList()
+        topic1.add("Topic 1")
+        topic1.add("Topic 2")
+        topic1.add("Topic 3")
 
-        // Create a TextView for the title
-        val titleTextView = TextView(this)
-        titleTextView.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        titleTextView.text = title
-        titleTextView.textSize = 16f
-        titleTextView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-        titleTextView.setTextColor(resources.getColor(R.color.white)) // Use the appropriate color resource
-        titleTextView.setPadding(0, 15, 0, 15) // Adjust padding as needed
-        linearLayout.addView(titleTextView)
+        val topic2: MutableList<String> = ArrayList()
+        topic2.add("Topic 1")
+        topic2.add("Topic 2")
+        topic2.add("Topic 3")
 
-        // Create additional views dynamically here as needed
+        val topic3: MutableList<String> = ArrayList()
+        topic3.add("Topic 1")
+        topic3.add("Topic 2")
+        topic3.add("Topic 3")
 
-        // Add a separator line
-        val separator = View(this)
-        separator.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            2
-        )
-        separator.setBackgroundColor(resources.getColor(R.color.medium_green)) // Use the appropriate color resource
-        linearLayout.addView(separator)
-        return id
+        topicList[chapterList[0]] = topic1
+        topicList[chapterList[1]] = topic2
+        topicList[chapterList[2]] = topic3
     }
 
     override fun onMapReady(map: GoogleMap) {
