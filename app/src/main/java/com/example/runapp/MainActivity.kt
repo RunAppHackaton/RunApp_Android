@@ -30,7 +30,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 
-const val BASE_RUN_URl = "https://app.swaggerhub.com/"
+
+const val BASE_RUN_URl = "https://virtserver.swaggerhub.com/"
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -73,32 +74,82 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
-        getMyData()
+//        getMyData()
+//        postMyData()
     }
 
     private fun getMyData() {
-        val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+        val retrofit = Retrofit.Builder()
             .baseUrl(BASE_RUN_URl)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getData()
-        retrofitData.enqueue(object : Callback<List<MyData>?> {
-            override fun onResponse(call: Call<List<MyData>?>, response: Response<List<MyData>?>) {
-                val responseBody = response.body()!!
+        val service = retrofit.create(ApiService::class.java)
+        val call = service.getRunSession()
 
-                val myStringBuilder = StringBuilder()
-                for(myData in responseBody){
-                    myStringBuilder.append(myData.id)
-                    myStringBuilder.append("\n")
+        call.enqueue(object : Callback<RunSession> {
+            override fun onResponse(call: Call<RunSession>, response: Response<RunSession>) {
+                if (response.isSuccessful) {
+                    val runSession = response.body()
+                    nameSur.text = runSession.toString()
+                } else {
+                    val errorCode = response.code()
+                    Log.e("MainActivity", "Error Code: $errorCode")
                 }
-                nameSur.text = myStringBuilder
             }
 
-            override fun onFailure(call: Call<List<MyData>?>, t: Throwable) {
-                Log.d("MainActivity", "OnFailure" + t.message)
+            override fun onFailure(call: Call<RunSession>, t: Throwable) {
+                Log.e("MainActivity", "OnFailure: ${t.message}")
+            }
+        })
+    }
+    private fun postMyData() {
 
-                TODO("Check if server is OK")
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_RUN_URl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        val requestBody = CreateRunRequestBody(
+            distance_km = 10,
+            duration_time = DurationTime(
+                seconds = 3600,
+                zero = false,
+                nano = 0,
+                negative = false,
+                units = listOf(Unit(true, true, true))
+            ),
+            caloriesBurned = 200,
+            notes = "Ran in the park",
+            routeId = 1,
+            shoesId = 1,
+            userId = 1,
+            route_points = listOf(RoutePointPost(0.0, 0.0)),
+            training_id_from_run_plan = 1,
+            weatherConditions = "Sunny",
+            pace = PacePost(420, false, 0, false)
+        )
+
+        val call = service.createRunSession(requestBody)
+
+        call.enqueue(object : Callback<CreateRunResponseBody> {
+            override fun onResponse(
+                call: Call<CreateRunResponseBody>,
+                response: Response<CreateRunResponseBody>
+            ) {
+                if (response.isSuccessful) {
+                    val runSession = response.body()
+                    nameSur.text = runSession.toString()
+                } else {
+                    val errorCode = response.code()
+                    Log.e("MainActivity", "Error Code: $errorCode")
+                }
+            }
+
+            override fun onFailure(call: Call<CreateRunResponseBody>, t: Throwable) {
+                Log.e("MainActivity", "OnFailure: ${t.message}")
             }
         })
     }
