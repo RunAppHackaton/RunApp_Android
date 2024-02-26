@@ -29,15 +29,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.util.*
 
-
-const val BASE_RUN_URl = "https://virtserver.swaggerhub.com/"
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var baseUrl: String
     private var myLatitude: Double = 0.0
     private var myLongitude: Double = 0.0
     private var doubleBackToExitPressedOnce = false
@@ -74,13 +76,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
+        baseUrl = BuildConfig.BASE_URL
 //        getMyData()
 //        postMyData()
     }
 
     private fun getMyData() {
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_RUN_URl)
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -106,7 +109,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun postMyData() {
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_RUN_URl)
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
