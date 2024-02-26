@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         baseUrl = BuildConfig.BASE_URL
-//        getMyData()
-//        postMyData()
+        getMyData()
+        postMyData()
     }
 
     private fun getMyData() {
