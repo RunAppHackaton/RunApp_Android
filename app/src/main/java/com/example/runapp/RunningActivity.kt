@@ -114,7 +114,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 //                negative = false,
 //                units = listOf(Unit(true, true, true)))
 
-            caloriesBurned = (0.0175 * 8 * EXAMPLE_WEIGHT * (secondsPassed / 60)).toInt(),
+            sumOfCalories.toInt(),
             //TODO use real weight
             notes = "Ran in the park",
             routeId = 1,
