@@ -29,8 +29,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.util.*
 
 
@@ -77,8 +75,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         baseUrl = BuildConfig.BASE_URL
-        getMyData()
-        postMyData()
+//        getMyData()
     }
 
     private fun getMyData() {
@@ -94,7 +91,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onResponse(call: Call<RunSession>, response: Response<RunSession>) {
                 if (response.isSuccessful) {
                     val runSession = response.body()
-                    nameSur.text = runSession.toString()
+                    //TODO do smth with response
                 } else {
                     val errorCode = response.code()
                     Log.e("MainActivity", "Error Code: $errorCode")
@@ -102,56 +99,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             override fun onFailure(call: Call<RunSession>, t: Throwable) {
-                Log.e("MainActivity", "OnFailure: ${t.message}")
-            }
-        })
-    }
-    private fun postMyData() {
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(ApiService::class.java)
-
-        val requestBody = CreateRunRequestBody(
-            distance_km = 10,
-            duration_time = DurationTime(
-                seconds = 3600,
-                zero = false,
-                nano = 0,
-                negative = false,
-                units = listOf(Unit(true, true, true))
-            ),
-            caloriesBurned = 200,
-            notes = "Ran in the park",
-            routeId = 1,
-            shoesId = 1,
-            userId = 1,
-            route_points = listOf(RoutePointPost(0.0, 0.0)),
-            training_id_from_run_plan = 1,
-            weatherConditions = "Sunny",
-            pace = PacePost(420, false, 0, false)
-        )
-
-        val call = service.createRunSession(requestBody)
-
-        call.enqueue(object : Callback<CreateRunResponseBody> {
-            override fun onResponse(
-                call: Call<CreateRunResponseBody>,
-                response: Response<CreateRunResponseBody>
-            ) {
-                if (response.isSuccessful) {
-                    val runSession = response.body()
-                    nameSur.text = runSession.toString()
-                } else {
-                    val errorCode = response.code()
-                    Log.e("MainActivity", "Error Code: $errorCode")
-                }
-            }
-
-            override fun onFailure(call: Call<CreateRunResponseBody>, t: Throwable) {
                 Log.e("MainActivity", "OnFailure: ${t.message}")
             }
         })
@@ -201,7 +148,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         myLatitude = location.latitude
                         myLongitude = location.longitude
 
-                        // Move the camera to the user's location
                         val userLocation = LatLng(myLatitude, myLongitude)
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                     }

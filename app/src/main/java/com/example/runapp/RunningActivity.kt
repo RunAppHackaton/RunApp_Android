@@ -1,6 +1,5 @@
 package com.example.runapp
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
@@ -26,6 +25,12 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -40,6 +45,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var runningBar : View
     private lateinit var stopRunButton : View
     private lateinit var timerView : TextView
+    private lateinit var baseUrl: String
     lateinit var polyline: Polyline
     private lateinit var locationRequest : LocationRequest
     private val handler = Handler()
@@ -47,6 +53,10 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     var totalDistanceInMeters: Float = 0f
     var lastLocation: Location? = null
     private lateinit var bottomNavigationView: BottomNavigationView
+    private var listRoutePoints: MutableList<RoutePointPost> = ArrayList()
+    var pacesSeconds: Int = 0
+
+    val EXAMPLE_WEIGHT: Double = 80.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,12 +75,74 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         stopRunButton.setOnClickListener{
             isStarted = false
+
+            val durTime = DurationTime(secondsPassed, false, 0, false, emptyList())
+            postMyData(totalDistanceInMeters.toDouble() / 1000, durTime, listRoutePoints, pacesSeconds)
+
+
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()
         }
         val intent = Intent(this, LocationTrackingService::class.java)
 
         startForegroundService(intent)
+
+        baseUrl = BuildConfig.BASE_URL
+    }
+
+    private fun postMyData(distance: Double, time: DurationTime, points: List<RoutePointPost>, secondsPaced: Int) {
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        val requestBody = CreateRunRequestBody(
+            distance_km = distance,
+            duration_time = time,
+//            DurationTime(
+//                seconds = 3600,
+//                zero = false,
+//                nano = 0,
+//                negative = false,
+//                units = listOf(Unit(true, true, true)))
+
+            caloriesBurned = (0.0175 * 8 * EXAMPLE_WEIGHT * (secondsPassed / 60)).toInt(),
+            //TODO use real weight
+            notes = "Ran in the park",
+            routeId = 1,
+            shoesId = 1,
+            userId = 1,
+            route_points = points,
+//            listOf(RoutePointPost(0.0, 0.0))
+            training_id_from_run_plan = 1,
+            weatherConditions = "Sunny",
+            //TODO add api for weather
+            pace = PacePost(420, false, 0, false)
+        )
+
+        val call = service.createRunSession(requestBody)
+
+        call.enqueue(object : Callback<CreateRunResponseBody> {
+            override fun onResponse(
+                call: Call<CreateRunResponseBody>,
+                response: Response<CreateRunResponseBody>
+            ) {
+                if (response.isSuccessful) {
+                    val runSession = response.body()
+                    //TODO do smth with response
+                } else {
+                    val errorCode = response.code()
+                    Log.e("RunningActivity", "Error Code: $errorCode")
+                }
+            }
+
+            override fun onFailure(call: Call<CreateRunResponseBody>, t: Throwable) {
+                Log.e("RunningActivity", "OnFailure: ${t.message}")
+            }
+        })
     }
 
     override fun onBackPressed() {
@@ -262,8 +334,16 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                         totalDistanceInMeters += distance
 
                         val speed = location.speed
+                        //TODO check why .speed didn't work
+
+                        if (speed < 5){
+                            pacesSeconds++
+                        }
 
                         updateDistanceAndSpeed(totalDistanceInMeters, speed)
+                        if (secondsPassed % 30 == 0){
+                            listRoutePoints.add(RoutePointPost(location.latitude, location.longitude))
+                        }
                     }
                     lastLocation = location
                     locationRepository.removeLocation(0)

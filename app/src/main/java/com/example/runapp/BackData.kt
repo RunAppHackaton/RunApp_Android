@@ -3,7 +3,7 @@ package com.example.runapp
 data class RunSession(
     val id: Int,
     val date: String,
-    val distance: Int,
+    val distance: Double,
     val duration_time: DurationTime,
     val pace: Pace,
     val caloriesBurned: Int,
@@ -17,7 +17,7 @@ data class RunSession(
 )
 
 data class CreateRunRequestBody(
-    val distance_km: Int,
+    val distance_km: Double,
     val duration_time: DurationTime,
     val caloriesBurned: Int,
     val notes: String,
@@ -33,7 +33,7 @@ data class CreateRunRequestBody(
 data class CreateRunResponseBody(
     val id: Int,
     val date: String,
-    val distance: Int,
+    val distance: Double,
     val duration_time: DurationTime,
     val pace: Pace,
     val caloriesBurned: Int,
