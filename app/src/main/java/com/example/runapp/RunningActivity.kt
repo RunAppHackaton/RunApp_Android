@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_running.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,6 +58,10 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     var pacesSeconds: Int = 0
 
     val EXAMPLE_WEIGHT: Double = 80.0
+
+    var caloriesBurnedRunning = 0.0
+    var caloriesBurnedWalking = 0.0
+    var sumOfCalories = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -319,6 +324,8 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     fun drawRoute(){
+        var lastUpdateTime: Long = 0
+
         val locationRepository = LocationRepository.getInstance()
         locationRepository.addListener(object : LocationRepository.LocationListener {
             override fun onLocationListUpdated(locationList: List<LatLng>) {
@@ -330,15 +337,20 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationList[0], 15f))
 
                     if (lastLocation != null) {
+                        val currentTime = System.currentTimeMillis()
+                        val timeDifference = currentTime - lastUpdateTime
+
                         val distance = lastLocation!!.distanceTo(location)
                         totalDistanceInMeters += distance
 
-                        val speed = location.speed
+                        val speed = distance / (timeDifference / 1000.0f)
+//                        val speed = location.speed
                         //TODO check why .speed didn't work
 
                         if (speed < 5){
                             pacesSeconds++
                         }
+                        lastUpdateTime = currentTime
 
                         updateDistanceAndSpeed(totalDistanceInMeters, speed)
                         if (secondsPassed % 30 == 0){
@@ -354,12 +366,19 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun updateDistanceAndSpeed(distanceInMeters: Float, speed: Float) {
         val distanceInKm = distanceInMeters / 1000
         val speedInKmPerHour = speed * 3.6
+        if (speed !in 0f..5f) {
+            caloriesBurnedRunning = (0.0175 * 8 * EXAMPLE_WEIGHT * ((secondsPassed - pacesSeconds).toDouble() / 60))
+        }else if(speed > 1f){
+            caloriesBurnedWalking = (0.0175 * 3.5 * EXAMPLE_WEIGHT * pacesSeconds.toDouble() / 60)
+        }
 
-        val distanceTextView: TextView = findViewById(R.id.distance)
-        distanceTextView.text = String.format("%.2f km", distanceInKm)
+        sumOfCalories = caloriesBurnedRunning + caloriesBurnedWalking
 
-        val speedTextView: TextView = findViewById(R.id.speed)
-        speedTextView.text = String.format("%.2f km/h", speedInKmPerHour)
+        distance.text = String.format("%.2f km", distanceInKm)
+
+        kcal.text = String.format("%.1f", sumOfCalories)
+
+        speedV.text = String.format("%.1f km/h", speedInKmPerHour)
     }
 }
 

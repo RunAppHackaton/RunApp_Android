@@ -137,7 +137,7 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/speed"
+                    android:id="@+id/speedV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="0"

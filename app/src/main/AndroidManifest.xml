@@ -23,15 +23,17 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:label="@string/title_activity_settings">
-            <meta-data
+            android:label="@string/title_activity_settings"
+            tools:ignore="LockedOrientationActivity">
+        <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".RunningActivity"
-            android:exported="false">
-            <meta-data
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity">
+        <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
