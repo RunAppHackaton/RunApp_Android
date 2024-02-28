@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogInActivity">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="50dp"
+        android:layout_margin="65dp"
+        android:elevation="10dp">
+
+        <ImageView
+            android:id="@+id/roundedImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo"
+            android:background="@color/white" />
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/logInButton"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_rectangle_dark"
+        android:backgroundTint="@color/medium_green"
+        android:layout_marginBottom="220dp"
+        android:fontFamily="@font/opensansbold"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:text="Log In"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/regButton"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_rectangle_dark"
+        android:backgroundTint="@color/medium_green"
+        android:layout_marginBottom="110dp"
+        android:fontFamily="@font/opensansbold"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:text="Register"
+        tools:ignore="HardcodedText" />
+
+</RelativeLayout>

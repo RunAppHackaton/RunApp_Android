@@ -67,6 +67,7 @@
                 android:text="Get the \n ingredients"
                 android:fontFamily="@font/opensansbold"
                 android:layout_marginStart="30dp"
+                android:backgroundTint="@color/orange"
                 android:layout_marginEnd="30dp"
                 android:layout_marginTop="10dp"
                 android:textSize="15sp" />
@@ -78,6 +79,7 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
+                android:backgroundTint="@color/orange"
                 android:background="@drawable/rounded_button"
                 android:fontFamily="@font/opensansbold"
                 android:text="Potion making"
@@ -113,6 +115,7 @@
                 android:background="@drawable/rounded_button"
                 android:layout_gravity="center_horizontal"
                 android:text="Explore the \nlocations"
+                android:backgroundTint="@color/orange"
                 android:fontFamily="@font/opensansbold"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
@@ -129,6 +132,7 @@
                 android:background="@drawable/rounded_button"
                 android:fontFamily="@font/opensansbold"
                 android:text="Get scrolls"
+                android:backgroundTint="@color/orange"
                 android:textSize="15sp"
                 tools:ignore="TouchTargetSizeCheck" />
             <View
@@ -161,6 +165,7 @@
                 android:background="@drawable/rounded_button"
                 android:layout_gravity="center_horizontal"
                 android:text="Earn loyalty \npoints"
+                android:backgroundTint="@color/orange"
                 android:fontFamily="@font/opensansbold"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
