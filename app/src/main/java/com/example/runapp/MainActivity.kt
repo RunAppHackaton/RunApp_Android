@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var baseUrl: String
+    private lateinit var baseUrlWorkout: String
     private var myLatitude: Double = 0.0
     private var myLongitude: Double = 0.0
     private var doubleBackToExitPressedOnce = false
@@ -74,24 +74,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
-        baseUrl = BuildConfig.BASE_URL
+        baseUrlWorkout = BuildConfig.BASE_URL_WORKOUT
         getMyData()
     }
 
     private fun getMyData() {
         val retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(baseUrlWorkout)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val service = retrofit.create(ApiService::class.java)
         val call = service.getRunSession()
 
-        call.enqueue(object : Callback<RunSession> {
-            override fun onResponse(call: Call<RunSession>, response: Response<RunSession>) {
+        call.enqueue(object : Callback<List<RunSession>> {
+            override fun onResponse(call: Call<List<RunSession>>, response: Response<List<RunSession>>) {
                 if (response.isSuccessful) {
                     val runSession = response.body()
                     println(runSession.toString())
+                    println(response.errorBody())
 
                     //TODO do smth with response
                 } else {
@@ -99,7 +100,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     Log.e("MainActivity", "Error Code: $errorCode")
                 }
             }
-            override fun onFailure(call: Call<RunSession>, t: Throwable) {
+            override fun onFailure(call: Call<List<RunSession>>, t: Throwable) {
                 Log.e("MainActivity", "OnFailure: ${t.message}")
             }
         })

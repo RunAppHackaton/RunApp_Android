@@ -100,7 +100,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
         startForegroundService(intent)
 
-        baseUrl = BuildConfig.BASE_URL
+        baseUrl = BuildConfig.BASE_URL_WORKOUT
     }
 
     private fun postMyData(distance: Double, time: DurationTime, points: List<RoutePointPost>) {
