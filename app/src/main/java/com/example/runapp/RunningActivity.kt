@@ -5,6 +5,10 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.location.Location
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
@@ -20,10 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_running.*
@@ -81,12 +82,19 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         stopRunButton.setOnClickListener{
             isStarted = false
 
+            val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker("finish"))
+            googleMap.addMarker(MarkerOptions().position(LatLng(myLatitude, myLongitude)).icon(customMarker))
+
             val durTime = DurationTime(secondsPassed, false, 0, false, emptyList())
-            postMyData(totalDistanceInMeters.toDouble() / 1000, durTime, listRoutePoints, pacesSeconds)
+            postMyData(totalDistanceInMeters.toDouble() / 1000, durTime, listRoutePoints)
 
+            handler.removeCallbacks(updateTextRunnable)
 
-            startActivity(Intent(applicationContext, MainActivity::class.java))
-            finish()
+            Handler(Looper.getMainLooper()).postDelayed({
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
+            }, 3000)
+
         }
         val intent = Intent(this, LocationTrackingService::class.java)
 
@@ -95,7 +103,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         baseUrl = BuildConfig.BASE_URL
     }
 
-    private fun postMyData(distance: Double, time: DurationTime, points: List<RoutePointPost>, secondsPaced: Int) {
+    private fun postMyData(distance: Double, time: DurationTime, points: List<RoutePointPost>) {
 
         val retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
@@ -129,6 +137,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         )
 
         val call = service.createRunSession(requestBody)
+        println(requestBody.toString())
 
         call.enqueue(object : Callback<CreateRunResponseBody> {
             override fun onResponse(
@@ -137,6 +146,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             ) {
                 if (response.isSuccessful) {
                     val runSession = response.body()
+                    println(runSession.toString())
                     //TODO do smth with response
                 } else {
                     val errorCode = response.code()
@@ -155,6 +165,15 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             super.onBackPressed()
             return
         }
+
+        isStarted = false
+
+        val durTime = DurationTime(secondsPassed, false, 0, false, emptyList())
+        postMyData(totalDistanceInMeters.toDouble() / 1000, durTime, listRoutePoints)
+
+
+        startActivity(Intent(applicationContext, MainActivity::class.java))
+        finish()
 
         this.doubleBackToExitPressedOnce = true
         Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
@@ -322,15 +341,44 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         return location
     }
 
+    private fun createCustomMarker(startFinish: String): Bitmap {
+        val diameter = 50 // Diameter of the marker circle
+        val bitmap = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+
+        if (startFinish.equals("start")){
+            paint.color = Color.GREEN
+        }else if (startFinish.equals("finish")){
+            paint.color = Color.BLUE
+        }
+        canvas.drawCircle((diameter / 2).toFloat(), (diameter / 2).toFloat(), (diameter / 2).toFloat(), paint)
+        paint.color = Color.WHITE
+        canvas.drawCircle((diameter / 2).toFloat(), (diameter / 2).toFloat(), (diameter / 2 - 5).toFloat(), paint)
+        if (startFinish.equals("start")){
+            paint.color = Color.GREEN
+        }else if (startFinish.equals("finish")){
+            paint.color = Color.BLUE
+        }
+        canvas.drawCircle((diameter / 2).toFloat(), (diameter / 2).toFloat(), 5f, paint)
+
+        return bitmap
+    }
+
     @SuppressLint("MissingPermission")
     fun drawRoute(){
         var lastUpdateTime: Long = 0
 
         val locationRepository = LocationRepository.getInstance()
+        locationRepository.clearListeners()
         locationRepository.addListener(object : LocationRepository.LocationListener {
             override fun onLocationListUpdated(locationList: List<LatLng>) {
                 if (locationList.isNotEmpty()){
                     val location = locationList[0].toLocation()
+                    if (polyline.points.isEmpty()) {
+                        val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker("start"))
+                        googleMap.addMarker(MarkerOptions().position(locationList[0]).icon(customMarker))
+                    }
                     val points = polyline.points
                     points.add(locationList[0])
                     polyline.points = points

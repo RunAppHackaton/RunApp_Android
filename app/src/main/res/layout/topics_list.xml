@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/topics_tv"
         android:text="Topics TextView"
-        android:textSize="26sp"/>
+        android:textColor="@color/white"
+        android:fontFamily="@font/opensansbold"
+        android:textSize="14sp"/>
 
 </LinearLayout>

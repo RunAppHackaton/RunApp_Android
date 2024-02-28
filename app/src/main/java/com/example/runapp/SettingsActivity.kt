@@ -3,11 +3,11 @@ package com.example.runapp
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.settings_activity.*
 
 
 class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -26,11 +27,7 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var expandableListViewRoutes: ExpandableListView
     private lateinit var chapterList :  List<String>
     private lateinit var topicList : HashMap<String, List<String>>
-
-    private var routesId: Int = 0
-    private var sneakersId: Int = 0
-    private var goalsId: Int = 0
-    private var statisticId: Int = 0
+    private var doubleBackToExitPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,46 +56,52 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
-        expandableListViewRoutes = findViewById(R.id.expandableListViewRoutes)
 
         showList()
 
         listViewAdapter = ExpandableListViewAdapter(this, chapterList, topicList)
-        expandableListViewRoutes.setAdapter(listViewAdapter)
+        eListView.setAdapter(listViewAdapter)
+    }
 
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
 
-//        val expandableViewRoutes: ExpandableListView = findViewById(R.id.expandableListViewRoutes)
-//        val expandableViewSneakers: ExpandableListView = findViewById(R.id.expandableListViewSneakers)
-//        val expandableViewGoals: ExpandableListView = findViewById(R.id.expandableListViewGoals)
-//        val expandableViewStatistics: ExpandableListView = findViewById(R.id.expandableListViewStatistic)
+        this.doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 
     private fun showList() {
         chapterList = ArrayList()
         topicList = HashMap()
 
-        (chapterList as ArrayList<String>).add("Chapter 1")
-        (chapterList as ArrayList<String>).add("Chapter 2")
-        (chapterList as ArrayList<String>).add("Chapter 3")
+        (chapterList as ArrayList<String>).add("Routes")
+        (chapterList as ArrayList<String>).add("Sneakers")
+        (chapterList as ArrayList<String>).add("Goals")
+        (chapterList as ArrayList<String>).add("Statistic")
 
-        val topic1: MutableList<String> = ArrayList()
-        topic1.add("Topic 1")
-        topic1.add("Topic 2")
-        topic1.add("Topic 3")
+        val routes: MutableList<String> = ArrayList()
+        routes.add("Topic 1")
 
-        val topic2: MutableList<String> = ArrayList()
-        topic2.add("Topic 1")
-        topic2.add("Topic 2")
-        topic2.add("Topic 3")
+        val sneakers: MutableList<String> = ArrayList()
+//        sneakers.add("Topic 1")
 
-        val topic3: MutableList<String> = ArrayList()
-        topic3.add("Topic 1")
-        topic3.add("Topic 2")
-        topic3.add("Topic 3")
+        val goals: MutableList<String> = ArrayList()
+//        goals.add("Topic 1")
 
-        topicList[chapterList[0]] = topic1
-        topicList[chapterList[1]] = topic2
-        topicList[chapterList[2]] = topic3
+        val statistic: MutableList<String> = ArrayList()
+//        statistic.add("Topic 1")
+
+        topicList[chapterList[0]] = routes
+        topicList[chapterList[1]] = sneakers
+        topicList[chapterList[2]] = goals
+        topicList[chapterList[3]] = statistic
     }
 
     override fun onMapReady(map: GoogleMap) {

@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         baseUrl = BuildConfig.BASE_URL
-//        getMyData()
+        getMyData()
     }
 
     private fun getMyData() {
@@ -91,13 +91,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onResponse(call: Call<RunSession>, response: Response<RunSession>) {
                 if (response.isSuccessful) {
                     val runSession = response.body()
+                    println(runSession.toString())
+
                     //TODO do smth with response
                 } else {
                     val errorCode = response.code()
                     Log.e("MainActivity", "Error Code: $errorCode")
                 }
             }
-
             override fun onFailure(call: Call<RunSession>, t: Throwable) {
                 Log.e("MainActivity", "OnFailure: ${t.message}")
             }

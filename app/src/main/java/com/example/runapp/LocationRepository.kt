@@ -16,6 +16,10 @@ class LocationRepository private constructor() {
         listener.onLocationListUpdated(locationList)
     }
 
+    fun clearListeners() {
+        listeners.clear()
+    }
+
     fun removeListener(listener: LocationListener) {
         listeners.remove(listener)
     }

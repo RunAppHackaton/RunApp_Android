@@ -7,11 +7,12 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/chapter_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/chapter_tv"
+        android:fontFamily="@font/opensansbold"
         android:text="Chapter TextView"
-        android:textSize="38sp"
-        android:textColor="@color/black" />
+        android:textColor="@color/white"
+        android:textSize="26sp" />
 
 </LinearLayout>
