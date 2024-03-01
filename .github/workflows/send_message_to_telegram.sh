@@ -13,7 +13,7 @@ PHOTO_URI="$3"
 
 MESSAGE="<b>✅ Successful Deployment Notification ✅</b>
 Hey Team ✋,
-Exciting news! Another successful deployment has just been completed on the server.
+Exciting news! New update android repository
 
 <b>🤖 Project Name:</b> $PROJECT_NAME
 <b>☁️ Service Name:</b> $SERVICE_NAME
