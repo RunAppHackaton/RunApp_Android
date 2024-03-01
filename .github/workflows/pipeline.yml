@@ -1,0 +1,27 @@
+name: Build, Test, and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  Build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: ./.github/workflows/install_dependencies.sh
+
+      - name: Send success deploy message
+        env:
+          CHAT_ID: ${{ vars.CHAT_ID }}
+          BOT_TOKEN: ${{ vars.BOT_TOKEN }}
+          PHOTO_URI: ${{ vars.PHOTO_URI }}
+        run: ./.github/workflows/send_message_to_telegram.sh $CHAT_ID $BOT_TOKEN $PHOTO_URI
+        if: success()
