@@ -12,8 +12,9 @@ PHOTO_URI="$3"
 
 
 MESSAGE="<b>✅ Successful Deployment Notification ✅</b>
-Hey Team ✋,
-Exciting news! New update android repository
+Hey Team! 🖐️
+
+We're thrilled to announce a new update to the repository for the client-side part of our running app on Android.
 
 <b>🤖 Project Name:</b> $PROJECT_NAME
 <b>☁️ Service Name:</b> $SERVICE_NAME
