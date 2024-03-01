@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_running.*
+import kotlinx.android.synthetic.main.run_popup_menu.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
