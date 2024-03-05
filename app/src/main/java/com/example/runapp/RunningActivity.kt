@@ -152,6 +152,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                 } else {
                     val errorCode = response.code()
                     Log.e("RunningActivity", "Error Code: $errorCode")
+                    Log.e("RunningActivity", "Error Code: $response")
                 }
             }
 

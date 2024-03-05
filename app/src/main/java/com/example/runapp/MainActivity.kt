@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     //TODO do smth with response
                 } else {
                     val errorCode = response.code()
-                    Log.e("MainActivity", "Error Code: $errorCode")
+                    Log.e("MainActivity", "Error Code: $errorCode ${response.errorBody()?.string()}")
                 }
             }
             override fun onFailure(call: Call<List<RunSession>>, t: Throwable) {
