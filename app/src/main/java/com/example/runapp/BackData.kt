@@ -5,15 +5,15 @@ data class RunSession(
     val date: String,
     val distance: Double,
     val duration_time: DurationTime,
-    val pace: Pace,
     val caloriesBurned: Int,
-    val weatherConditions: String,
     val notes: String,
     val photosUrl: String,
     val route: Route,
-    val training: Training,
+    val shoesId: Int,
     val userId: Int,
-    val shoesId: Int
+    val training: Training,
+    val weatherConditions: String,
+    val pace: Pace
 )
 
 data class CreateRunRequestBody(

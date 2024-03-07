@@ -23,10 +23,14 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
 
-    private lateinit var listViewAdapter: ExpandableListAdapter
-    private lateinit var expandableListViewRoutes: ExpandableListView
-    private lateinit var chapterList :  List<String>
-    private lateinit var topicList : HashMap<String, List<String>>
+    private lateinit var listViewAdapterRoutes: ExpandableListViewAdapterRoutes
+    private lateinit var listViewAdapterSneakers: ExpandableListAdapterSneakers
+    private lateinit var combinedAdapter: CombinedExpandableListAdapter
+    private lateinit var routeList :  List<String>
+    private lateinit var routeChildList : HashMap<String, List<String>>
+    private lateinit var sneakerList :  List<String>
+    private lateinit var sneakerChildList :  HashMap<String, List<String>>
+    private lateinit var sneakerChildImageList :  HashMap<String, List<String>>
     private var doubleBackToExitPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,8 +63,27 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         showList()
 
-        listViewAdapter = ExpandableListViewAdapter(this, chapterList, topicList)
-        eListView.setAdapter(listViewAdapter)
+        listViewAdapterRoutes = ExpandableListViewAdapterRoutes(this, routeList, routeChildList)
+        listViewAdapterSneakers = ExpandableListAdapterSneakers(this, sneakerList, sneakerChildList, sneakerChildImageList)
+
+        combinedAdapter = CombinedExpandableListAdapter(this, listViewAdapterRoutes, listViewAdapterSneakers)
+
+        eListView.setAdapter(combinedAdapter)
+
+//        eListView.setAdapter(listViewAdapterSneakers)
+
+        listViewAdapterRoutes.setOnChapterFooterClickListener(object : ExpandableListViewAdapterRoutes.OnChapterFooterClickListener {
+            override fun onChapterFooterClicked(chapter: String) {
+                Log.d("SettingsActivity", "Added route")
+
+            }
+        })
+        listViewAdapterSneakers.setOnChapterFooterClickListener(object : ExpandableListAdapterSneakers.OnChapterFooterClickListener {
+            override fun onChapterFooterClicked(chapter: String) {
+                Log.d("SettingsActivity", "Added sneakers")
+
+            }
+        })
     }
 
     override fun onBackPressed() {
@@ -78,30 +101,27 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showList() {
-        chapterList = ArrayList()
-        topicList = HashMap()
-
-        (chapterList as ArrayList<String>).add("Routes")
-        (chapterList as ArrayList<String>).add("Sneakers")
-        (chapterList as ArrayList<String>).add("Goals")
-        (chapterList as ArrayList<String>).add("Statistic")
-
+        routeList = ArrayList()
+        routeChildList = HashMap()
+        (routeList as ArrayList<String>).add("Routes")
         val routes: MutableList<String> = ArrayList()
-        routes.add("Topic 1")
+        routes.add("Route 1")
+        routeChildList[routeList[0]] = routes
 
+        sneakerList = ArrayList()
+        sneakerChildList = HashMap()
+        sneakerChildImageList = HashMap()
+        (sneakerList as ArrayList<String>).add("Sneakers")
         val sneakers: MutableList<String> = ArrayList()
-//        sneakers.add("Topic 1")
-
-        val goals: MutableList<String> = ArrayList()
-//        goals.add("Topic 1")
-
-        val statistic: MutableList<String> = ArrayList()
-//        statistic.add("Topic 1")
-
-        topicList[chapterList[0]] = routes
-        topicList[chapterList[1]] = sneakers
-        topicList[chapterList[2]] = goals
-        topicList[chapterList[3]] = statistic
+        val imageUris: MutableList<String> = ArrayList()
+        sneakers.add("Sneakers 1")
+        imageUris.add("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-674010.jpg&fm=jpg")
+        sneakers.add("Sneakers 2")
+        imageUris.add("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-674010.jpg&fm=jpg")
+        sneakers.add("Sneakers 3")
+        imageUris.add("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-674010.jpg&fm=jpg")
+        sneakerChildList[sneakerList[0]] = sneakers
+        sneakerChildImageList[sneakerList[0]] = imageUris
     }
 
     override fun onMapReady(map: GoogleMap) {
