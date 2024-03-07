@@ -81,21 +81,7 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             showPopupMenu()
         }
         stopRunButton.setOnClickListener{
-            isStarted = false
-
-            val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker("finish"))
-            googleMap.addMarker(MarkerOptions().position(LatLng(myLatitude, myLongitude)).icon(customMarker))
-
-            val durTime = DurationTime(secondsPassed, false, 0, false, emptyList())
-            postMyData(totalDistanceInMeters.toDouble() / 1000, durTime, listRoutePoints)
-
-            handler.removeCallbacks(updateTextRunnable)
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(applicationContext, MainActivity::class.java))
-                finish()
-            }, 3000)
-
+            postDelay()
         }
         val intent = Intent(this, LocationTrackingService::class.java)
 
@@ -162,20 +148,32 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
-    override fun onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed()
-            return
-        }
-
+    private fun postDelay(){
         isStarted = false
+
+        val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker("finish"))
+        googleMap.addMarker(MarkerOptions().position(LatLng(myLatitude, myLongitude)).icon(customMarker))
 
         val durTime = DurationTime(secondsPassed, false, 0, false, emptyList())
         postMyData(totalDistanceInMeters.toDouble() / 1000, durTime, listRoutePoints)
 
+        handler.removeCallbacks(updateTextRunnable)
 
-        startActivity(Intent(applicationContext, MainActivity::class.java))
-        finish()
+        Handler(Looper.getMainLooper()).postDelayed({
+            startActivity(Intent(applicationContext, MainActivity::class.java))
+            this.finish()
+        }, 3000)
+    }
+
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            isStarted = false
+            val durTime = DurationTime(secondsPassed, false, 0, false, emptyList())
+            postMyData(totalDistanceInMeters.toDouble() / 1000, durTime, listRoutePoints)
+            handler.removeCallbacks(updateTextRunnable)
+            super.onBackPressed()
+            return
+        }
 
         this.doubleBackToExitPressedOnce = true
         Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
