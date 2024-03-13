@@ -1,0 +1,138 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GuildActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/backFromGuild"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/rounded_button"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:foreground="@drawable/close"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/rounded_rectangle_dark"
+        android:fillViewport="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="40dp"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:id="@+id/filterButtonLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginStart="10dp"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/closeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_filter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/opensans"
+                    android:text="Filter by"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/requestButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/dark_green"
+                android:fontFamily="@font/opensans"
+                android:padding="8dp"
+                android:text="Requests:"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/guildListView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp" />
+
+        <Button
+            android:id="@+id/createGuildButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/fade_edges"
+            android:fontFamily="@font/opensansbold"
+            android:text="+ Create new guild"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/chooseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/medium_green"
+            android:fontFamily="@font/opensansbold"
+            android:text="Choose"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/textset"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_rectangle">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Guild"
+            android:textSize="30sp"
+            android:fontFamily="@font/opensansbold"
+            android:textAlignment="center"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

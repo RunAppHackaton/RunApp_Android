@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -15,7 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.settings_activity.*
+import kotlinx.android.synthetic.main.settings_activity.eListView
 
 
 class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -69,8 +69,6 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
         combinedAdapter = CombinedExpandableListAdapter(this, listViewAdapterRoutes, listViewAdapterSneakers)
 
         eListView.setAdapter(combinedAdapter)
-
-//        eListView.setAdapter(listViewAdapterSneakers)
 
         listViewAdapterRoutes.setOnChapterFooterClickListener(object : ExpandableListViewAdapterRoutes.OnChapterFooterClickListener {
             override fun onChapterFooterClicked(chapter: String) {

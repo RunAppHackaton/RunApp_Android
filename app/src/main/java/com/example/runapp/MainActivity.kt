@@ -11,10 +11,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,14 +27,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
-import java.util.*
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -74,6 +77,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
+
+        val openGuild = findViewById<RelativeLayout>(R.id.openGuild)
+        openGuild.setOnClickListener {
+            val intent = Intent(this, GuildActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         baseUrlWorkout = BuildConfig.BASE_URL_WORKOUT
         getMyData()
     }
