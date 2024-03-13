@@ -129,72 +129,20 @@
 
             <!-- Extendable content -->
 
-            <ExpandableListView
-                android:id="@+id/eListView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textset"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                android:layoutDirection="rtl"
-                android:clickable="true"/>
-
-<!--            <View-->
-<!--                android:id="@+id/lineRoute"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="2dp"-->
-<!--                android:background="@color/medium_green"-->
-<!--                android:layout_below="@id/eListViewRoute"-->
-<!--                android:layout_marginTop="9dp"/>-->
-
-<!--            &lt;!&ndash; Sneakers section &ndash;&gt;-->
-<!--            <ExpandableListView-->
-<!--                android:id="@+id/eListViewSneaker"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/lineRoute"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:layout_marginStart="40dp"-->
-<!--                android:layout_marginEnd="40dp"-->
-<!--                android:layoutDirection="rtl"-->
-<!--                android:clickable="true"/>-->
-
-<!--            <View-->
-<!--                android:id="@+id/lineSneaker"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="2dp"-->
-<!--                android:background="@color/medium_green"-->
-<!--                android:layout_below="@id/eListViewSneaker"-->
-<!--                android:layout_marginTop="9dp"/>-->
-
-<!--            &lt;!&ndash; Goals section &ndash;&gt;-->
-<!--            <ExpandableListView-->
-<!--                android:id="@+id/eListViewGoals"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/lineSneaker"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:layout_marginStart="40dp"-->
-<!--                android:layout_marginEnd="40dp"-->
-<!--                android:layoutDirection="rtl"-->
-<!--                android:clickable="true"/>-->
-
-<!--            <View-->
-<!--                android:id="@+id/lineGoal"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="2dp"-->
-<!--                android:background="@color/medium_green"-->
-<!--                android:layout_below="@id/eListViewGoals"-->
-<!--                android:layout_marginTop="9dp"/>-->
-
-<!--            &lt;!&ndash; Statistic section &ndash;&gt;-->
+                android:scrollbars="vertical"
+                android:layout_marginEnd="40dp"/>
 
 <!--            <ExpandableListView-->
-<!--                android:id="@+id/eListViewStatistic"-->
+<!--                android:id="@+id/eListView"-->
 <!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/lineGoal"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_below="@id/textset"-->
 <!--                android:layout_marginTop="10dp"-->
 <!--                android:layout_marginStart="40dp"-->
 <!--                android:layout_marginEnd="40dp"-->

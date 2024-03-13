@@ -15,7 +15,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.settings_activity.eListView
 
 
 class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -23,14 +22,6 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
 
-    private lateinit var listViewAdapterRoutes: ExpandableListViewAdapterRoutes
-    private lateinit var listViewAdapterSneakers: ExpandableListAdapterSneakers
-    private lateinit var combinedAdapter: CombinedExpandableListAdapter
-    private lateinit var routeList :  List<String>
-    private lateinit var routeChildList : HashMap<String, List<String>>
-    private lateinit var sneakerList :  List<String>
-    private lateinit var sneakerChildList :  HashMap<String, List<String>>
-    private lateinit var sneakerChildImageList :  HashMap<String, List<String>>
     private var doubleBackToExitPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,25 +54,7 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         showList()
 
-        listViewAdapterRoutes = ExpandableListViewAdapterRoutes(this, routeList, routeChildList)
-        listViewAdapterSneakers = ExpandableListAdapterSneakers(this, sneakerList, sneakerChildList, sneakerChildImageList)
 
-        combinedAdapter = CombinedExpandableListAdapter(this, listViewAdapterRoutes, listViewAdapterSneakers)
-
-        eListView.setAdapter(combinedAdapter)
-
-        listViewAdapterRoutes.setOnChapterFooterClickListener(object : ExpandableListViewAdapterRoutes.OnChapterFooterClickListener {
-            override fun onChapterFooterClicked(chapter: String) {
-                Log.d("SettingsActivity", "Added route")
-
-            }
-        })
-        listViewAdapterSneakers.setOnChapterFooterClickListener(object : ExpandableListAdapterSneakers.OnChapterFooterClickListener {
-            override fun onChapterFooterClicked(chapter: String) {
-                Log.d("SettingsActivity", "Added sneakers")
-
-            }
-        })
     }
 
     override fun onBackPressed() {
@@ -99,27 +72,7 @@ class SettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showList() {
-        routeList = ArrayList()
-        routeChildList = HashMap()
-        (routeList as ArrayList<String>).add("Routes")
-        val routes: MutableList<String> = ArrayList()
-        routes.add("Route 1")
-        routeChildList[routeList[0]] = routes
 
-        sneakerList = ArrayList()
-        sneakerChildList = HashMap()
-        sneakerChildImageList = HashMap()
-        (sneakerList as ArrayList<String>).add("Sneakers")
-        val sneakers: MutableList<String> = ArrayList()
-        val imageUris: MutableList<String> = ArrayList()
-        sneakers.add("Sneakers 1")
-        imageUris.add("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-674010.jpg&fm=jpg")
-        sneakers.add("Sneakers 2")
-        imageUris.add("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-674010.jpg&fm=jpg")
-        sneakers.add("Sneakers 3")
-        imageUris.add("https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-674010.jpg&fm=jpg")
-        sneakerChildList[sneakerList[0]] = sneakers
-        sneakerChildImageList[sneakerList[0]] = imageUris
     }
 
     override fun onMapReady(map: GoogleMap) {
