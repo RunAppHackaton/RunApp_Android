@@ -10,4 +10,6 @@ interface ApiService {
     fun getRunSession(): Call<List<RunSession>>
     @POST("/run-sessions")
     fun createRunSession(@Body requestBody: CreateRunRequestBody): Call<CreateRunResponseBody>
+    @POST("/teams")
+    fun createGuild(@Body requestBody: Team): Call<TeamResponse>
 }

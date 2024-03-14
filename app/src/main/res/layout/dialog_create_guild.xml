@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:id="@+id/menu_block"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_rectangle_dark"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/backToList"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            android:background="@drawable/ic_arrow_back" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/members"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Members"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/opensansbold"
+                android:layout_marginStart="40dp"
+                android:padding="5dp" />
+
+            <TextView
+                android:id="@+id/membersCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1/10"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/opensansbold"
+                android:textAlignment="viewEnd"
+                android:layout_marginEnd="30dp"
+                android:padding="5dp" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/membersList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="@android:color/transparent"
+            android:layout_margin="10dp"
+            android:dividerHeight="8dp" />
+
+        <Button
+            android:id="@+id/addMember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fade_edges"
+            android:fontFamily="@font/opensansbold"
+            android:text="+ Add member"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/createButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:background="@drawable/rounded_rectangle"
+            android:backgroundTint="@color/orange"
+            android:fontFamily="@font/opensansbold"
+            android:text="Create"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/texttr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_rectangle"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:text="Create a guild"
+            android:textSize="26sp"
+            android:fontFamily="@font/opensansbold"
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText" />
+    </RelativeLayout>
+
+</RelativeLayout>

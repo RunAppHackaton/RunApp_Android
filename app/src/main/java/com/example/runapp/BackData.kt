@@ -80,6 +80,32 @@ data class Route(
     val routePoints: List<RoutePoint>
 )
 
+data class UsersInTeam(
+    val id: Int,
+    val userId: String
+)
+
+data class Team(
+    val teamName: String,
+    val descriptionTeam: String,
+    val storyId: Int,
+    val maximumPlayers: Int,
+    val adminId: String
+)
+
+data class TeamResponse(
+    val adminId: String,
+    val createDate: String,
+    val descriptionTeam: String,
+    val id: Int,
+    val maximumPlayers: Int,
+    val ranking: Int,
+    val storyId: Int,
+    val teamImageUrl: String,
+    val teamName: String,
+    val users_in_team: List<UsersInTeam>
+)
+
 data class RoutePoint(
     val id: Int,
     val latitude: Double,
