@@ -2,13 +2,13 @@ package com.example.runapp
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_log_in.*
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_log_in.logInButton
+import kotlinx.android.synthetic.main.activity_log_in.regButton
 
 class LogInActivity : AppCompatActivity() {
 
@@ -19,7 +19,7 @@ class LogInActivity : AppCompatActivity() {
         setContentView(R.layout.activity_log_in)
 
         logInButton.setOnClickListener {
-            val url = "https://lemur-14.cloud-iam.com/auth/admin/runapp-keycloak/console/"
+            val url = "url"
 
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)
@@ -27,7 +27,7 @@ class LogInActivity : AppCompatActivity() {
             startActivity(intent)
         }
         regButton.setOnClickListener {
-            val url = "https://lemur-14.cloud-iam.com/auth/admin/runapp-keycloak/console/"
+            val url = "url"
 
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)

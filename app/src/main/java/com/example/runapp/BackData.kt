@@ -85,6 +85,32 @@ data class UsersInTeam(
     val userId: String
 )
 
+data class UsersToAdd(
+    val userId: String,
+    val id: Int
+)
+
+data class KeycloakToken(
+    val access_token: String,
+    val refresh_token: String?,
+    val expires_in: Int?,
+    val token_type: String?,
+    val id_token: String?,
+)
+
+data class UserCredential(
+    val type: String,
+    val value: String,
+    val temporary: Boolean
+)
+
+data class CreateUserRequest(
+    val username: String,
+    val enabled: Boolean,
+    val email: String,
+    val credentials: List<UserCredential>
+)
+
 data class Team(
     val teamName: String,
     val descriptionTeam: String,

@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLongitude: Double = 0.0
     private var doubleBackToExitPressedOnce = false
 
+
+    private var token: String? = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -87,6 +90,64 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         baseUrlWorkout = BuildConfig.BASE_URL_WORKOUT
         getMyData()
+
+        val keycloakClient = KeycloakClient(BuildConfig.KC_BASE_URL)
+        keycloakClient.getAccessToken(
+            grantType = "password",
+            clientId = BuildConfig.CLIENT_ID_KC,
+            username = BuildConfig.USERNAME_KC,
+            password = BuildConfig.PASSWORD_KC,
+            callback = object : retrofit2.Callback<KeycloakToken> {
+                override fun onResponse(call: Call<KeycloakToken>, response: Response<KeycloakToken>) {
+                    if (response.isSuccessful) {
+                        token = response.body()?.access_token
+                        // Use the access token
+                        println("Token ${token}")
+
+//                        val createUserRequest = CreateUserRequest(
+//                            username = "newuser1",
+//                            enabled = true,
+//                            email = "newuser1@example.com",
+//                            credentials = listOf(
+//                                UserCredential(
+//                                    type = "password",
+//                                    value = "password",
+//                                    temporary = false
+//                                )
+//                            )
+//                        )
+//                        keycloakClient.createUser(
+//                            adminToken = token!!,
+//                            createUserRequest = createUserRequest,
+//                            callback = object : retrofit2.Callback<Void> {
+//                                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+//                                    if (response.isSuccessful) {
+//                                        println("User created successfully")
+//                                    } else {
+//                                        println("Failed to create user: ${response.errorBody()?.string()}")
+//                                    }
+//                                }
+//
+//                                override fun onFailure(call: Call<Void>, t: Throwable) {
+//                                    println("Error calling Keycloak: ${t.message}")
+//                                }
+//                            }
+//                        )
+
+                    } else {
+                        val errorCode = response.code()
+
+                        Log.e("MainActivity", "Error Code: $errorCode ${response.errorBody()?.string()}")
+
+                    }
+                }
+
+                override fun onFailure(call: Call<KeycloakToken>, t: Throwable) {
+                    Log.e("MainActivity", "OnFailure: ${t.message}")
+
+                }
+            }
+        )
     }
 
     private fun getMyData() {

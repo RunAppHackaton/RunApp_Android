@@ -23,6 +23,12 @@ android {
 
         buildConfigField "String", "BASE_URL_WORKOUT", "\"${properties.getProperty("BASE_URL_WORKOUT")}\""
         buildConfigField "String", "BASE_URL_GUILD", "\"${properties.getProperty("BASE_URL_GUILD")}\""
+        buildConfigField "String", "ADMIN_TOKEN_ENDPOINT", "\"${properties.getProperty("ADMIN_TOKEN_ENDPOINT")}\""
+        buildConfigField "String", "USER_ADD_KC_ENDPOINT", "\"${properties.getProperty("USER_ADD_KC_ENDPOINT")}\""
+        buildConfigField "String", "KC_BASE_URL", "\"${properties.getProperty("KC_BASE_URL")}\""
+        buildConfigField "String", "CLIENT_ID_KC", "\"${properties.getProperty("CLIENT_ID_KC")}\""
+        buildConfigField "String", "USERNAME_KC", "\"${properties.getProperty("USERNAME_KC")}\""
+        buildConfigField "String", "PASSWORD_KC", "\"${properties.getProperty("PASSWORD_KC")}\""
     }
 
     buildTypes {

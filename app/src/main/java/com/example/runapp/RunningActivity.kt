@@ -113,13 +113,6 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         val requestBody = CreateRunRequestBody(
             distance_km = distance,
             duration_time = time,
-//            DurationTime(
-//                seconds = 3600,
-//                zero = false,
-//                nano = 0,
-//                negative = false,
-//                units = listOf(Unit(true, true, true)))
-
             sumOfCalories.toInt(),
             //TODO use real weight
             notes = "Ran in the park",
