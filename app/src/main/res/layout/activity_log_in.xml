@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInActivity">
+    android:background="@color/light_gray"
+    tools:context=".LogInActivityOld">
 
 
     <androidx.cardview.widget.CardView
@@ -13,7 +14,7 @@
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         app:cardCornerRadius="50dp"
-        android:layout_margin="65dp"
+        android:layout_margin="50dp"
         android:elevation="10dp">
 
         <ImageView
@@ -24,36 +25,70 @@
             android:background="@color/white" />
     </androidx.cardview.widget.CardView>
 
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_rectangle_dark"
+        android:backgroundTint="@color/light_green"
+        android:layout_marginBottom="290dp"
+        android:fontFamily="@font/opensansbold"
+        android:foreground="@drawable/fade_edges"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:hint="Username"/>
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_rectangle_dark"
+        android:foreground="@drawable/fade_edges"
+        android:backgroundTint="@color/light_green"
+        android:layout_marginBottom="180dp"
+        android:fontFamily="@font/opensansbold"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:hint="Password"/>
+
     <Button
         android:id="@+id/logInButton"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/rounded_rectangle_dark"
-        android:backgroundTint="@color/medium_green"
-        android:layout_marginBottom="220dp"
+        android:backgroundTint="@color/orange"
+        android:layout_marginBottom="60dp"
         android:fontFamily="@font/opensansbold"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:text="Log In"
-        tools:ignore="HardcodedText" />
+        android:text="Log In"/>
 
-    <Button
-        android:id="@+id/regButton"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
+    <TextView
+        android:id="@+id/registerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/rounded_rectangle_dark"
-        android:backgroundTint="@color/medium_green"
-        android:layout_marginBottom="110dp"
-        android:fontFamily="@font/opensansbold"
-        android:textColor="@color/white"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:fontFamily="@font/opensans"
+        android:textColor="@color/blue"
         android:textSize="18sp"
-        android:text="Register"
-        tools:ignore="HardcodedText" />
+        android:text="Register"/>
 
 </RelativeLayout>

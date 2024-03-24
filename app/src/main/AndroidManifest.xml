@@ -26,17 +26,19 @@
         tools:ignore="DiscouragedApi"
         tools:targetApi="34">
         <activity
+            android:name=".LogInActivity"
+            android:exported="true" />
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <activity
             android:name=".GuildActivity"
             android:exported="false" />
         <activity
-            android:name=".LogInActivity"
+            android:name=".LogInActivityOld"
             android:exported="true"
             android:screenOrientation="locked">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
